@@ -7,8 +7,8 @@ const myEmail = 'devon@southerngassolutions.com';
 const createApplication = async (req, res) => {
   try {
     const { name, email, phone, position, experience, message } = req.body;
-    const resume = req.files?.resume?.[0]?.filename || null;
-    const coverLetter = req.files?.coverLetter?.[0]?.filename || null;
+    const resumeFile = req.files?.resume?.[0] || null;
+    const coverLetterFile = req.files?.coverLetter?.[0] || null;
 
     const customerEmail = email?.trim().toLowerCase();
 
@@ -23,11 +23,16 @@ const createApplication = async (req, res) => {
       position,
       experience,
       message,
-      resume,
-      coverLetter,
+      resume: resumeFile?.filename || null,
+      coverLetter: coverLetterFile?.filename || null,
     });
 
     const fromLine = `"Southern Gas Solutions" <${process.env.EMAIL_USER}>`;
+
+    // Build attachments array from uploaded files
+    const emailAttachments = [];
+    if (resumeFile) emailAttachments.push({ filename: resumeFile.originalname, path: resumeFile.path });
+    if (coverLetterFile) emailAttachments.push({ filename: coverLetterFile.originalname, path: coverLetterFile.path });
 
     const result = await transporter.sendMail({
       from: fromLine,
@@ -46,10 +51,11 @@ const createApplication = async (req, res) => {
           ['Position', position],
           ['Experience', experience],
           ['Message', message],
-          ['Resume', resume ? `📎 ${resume}` : null],
-          ['Cover Letter', coverLetter ? `📎 ${coverLetter}` : null],
+          ['Resume', resumeFile ? `📎 ${resumeFile.originalname}` : null],
+          ['Cover Letter', coverLetterFile ? `📎 ${coverLetterFile.originalname}` : null],
         ],
       }),
+      attachments: emailAttachments,
     });
 
     console.log('✅ Email accepted:', result.accepted);
