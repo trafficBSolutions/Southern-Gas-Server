@@ -5,7 +5,7 @@ const { generateQuotePDF } = require('../utils/pdfGenerator');
 const path = require('path');
 const fs = require('fs');
 
-const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
+const CLIENT_URL = process.env.CLIENT_URL || 'https://www.southerngassolutions.com';
 
 exports.createAndSend = async (req, res) => {
   try {
