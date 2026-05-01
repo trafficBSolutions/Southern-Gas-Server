@@ -14,7 +14,7 @@ exports.login = async (req, res) => {
     if (!admin || !(await admin.comparePassword(password))) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
-    const token = jwt.sign({ id: admin._id, email: admin.email }, SECRET, { expiresIn: '7d' });
+    const token = jwt.sign({ id: admin._id, email: admin.email }, SECRET, { expiresIn: '14d' });
     res.json({ token, admin: { id: admin._id, name: admin.name, email: admin.email } });
   } catch (err) {
     res.status(500).json({ error: err.message });
