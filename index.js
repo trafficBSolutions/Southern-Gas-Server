@@ -5,6 +5,14 @@ const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
+const fs = require('fs');
+const path = require('path');
+
+// Ensure upload directories exist
+['uploads', 'uploads/quotes'].forEach(dir => {
+  const fullPath = path.join(__dirname, dir);
+  if (!fs.existsSync(fullPath)) fs.mkdirSync(fullPath, { recursive: true });
+});
 
 const contactRoutes = require('./routes/contactRoute');
 const quoteRoutes = require('./routes/quoteRoute');
