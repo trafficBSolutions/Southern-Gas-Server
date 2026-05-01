@@ -58,6 +58,16 @@ const submitQuote = async (req, res) => {
   }
 };
 
+const getQuotes = async (_req, res) => {
+  try {
+    const quotes = await Quote.find().sort({ createdAt: -1 });
+    res.json(quotes);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 module.exports = {
   submitQuote,
+  getQuotes,
 };
