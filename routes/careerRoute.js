@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const { createApplication, getApplications } = require('../controllers/careerControl');
+const verifyCaptcha = require('../utils/verifyCaptcha');
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => cb(null, path.join(__dirname, '..', 'uploads')),
@@ -22,7 +23,7 @@ const upload = multer({
 router.post('/', upload.fields([
   { name: 'resume', maxCount: 1 },
   { name: 'coverLetter', maxCount: 1 },
-]), createApplication);
+]), verifyCaptcha, createApplication);
 
 router.get('/', getApplications);
 
