@@ -22,11 +22,16 @@ function generateQuotePDF(quote, outputPath) {
     doc.fontSize(18).font('Helvetica-Bold').fillColor('#0a1628').text('QUOTE');
     doc.moveDown(0.3);
     doc.fontSize(10).font('Helvetica').fillColor('#3a4a5c');
+    if (quote.quoteNumber) doc.text(`Quote #: ${quote.quoteNumber}`);
     doc.text(`Date: ${new Date(quote.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`);
     doc.text(`Customer: ${quote.customer}`);
     doc.text(`Email: ${quote.email}`);
     if (quote.phone) doc.text(`Phone: ${quote.phone}`);
+    if (quote.jobAddress) doc.text(`Job Address: ${quote.jobAddress}`);
+    if (quote.county) doc.text(`County / Area: ${quote.county}`);
+    if (quote.area) doc.text(`Pricing Zone: ${quote.area}`);
     if (quote.service) doc.text(`Service: ${quote.service}`);
+    if (quote.jobType) doc.text(`Job Type: ${quote.jobType}`);
     doc.moveDown(1);
 
     // Table header
@@ -60,9 +65,17 @@ function generateQuotePDF(quote, outputPath) {
     y += 10;
     doc.moveTo(380, y).lineTo(562, y).strokeColor('#eef1f5').lineWidth(1).stroke();
     y += 8;
-    doc.fontSize(10).font('Helvetica');
+    doc.fontSize(10).font('Helvetica').fillColor('#3a4a5c');
     doc.text('Subtotal:', 380, y).text(money(quote.subtotal), 480, y, { width: 80, align: 'right' });
     y += 18;
+    if (quote.discount) {
+      doc.text('Discount:', 380, y).text(`-${money(quote.discount)}`, 480, y, { width: 80, align: 'right' });
+      y += 18;
+    }
+    if (quote.permitFee) {
+      doc.text('Permit/Inspection:', 380, y).text(money(quote.permitFee), 480, y, { width: 80, align: 'right' });
+      y += 18;
+    }
     doc.text('Tax:', 380, y).text(money(quote.taxDue), 480, y, { width: 80, align: 'right' });
     y += 22;
     doc.font('Helvetica-Bold').fontSize(13).fillColor('#0a1628');
