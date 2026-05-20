@@ -9,11 +9,16 @@ const CLIENT_URL = process.env.CLIENT_URL || 'https://www.southerngassolutions.c
 
 exports.createAndSend = async (req, res) => {
   try {
-    const { customer, email, phone, service, rows, taxRate, isTaxExempt, subtotal, taxDue, total } = req.body;
+    const { customer, email, phone, jobAddress, county, area, service, jobType, profitMargin, rows, taxRate, isTaxExempt, subtotal, discount, permitFee, taxDue, total } = req.body;
+
+    // Generate quote number
+    const count = await AdminQuote.countDocuments();
+    const quoteNumber = `SGS-${String(count + 1).padStart(4, '0')}`;
 
     const quote = await AdminQuote.create({
-      customer, email: email?.trim().toLowerCase(), phone, service,
-      rows, taxRate, isTaxExempt, subtotal, taxDue, total,
+      quoteNumber, customer, email: email?.trim().toLowerCase(), phone,
+      jobAddress, county, area, service, jobType, profitMargin,
+      rows, taxRate, isTaxExempt, subtotal, discount, permitFee, taxDue, total,
     });
 
     // Generate PDF
