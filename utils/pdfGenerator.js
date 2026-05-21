@@ -29,55 +29,36 @@ function generateQuotePDF(quote, outputPath) {
     if (quote.phone) doc.text(`Phone: ${quote.phone}`);
     if (quote.jobAddress) doc.text(`Job Address: ${quote.jobAddress}`);
     if (quote.county) doc.text(`County / Area: ${quote.county}`);
-    if (quote.area) doc.text(`Pricing Zone: ${quote.area}`);
     if (quote.service) doc.text(`Service: ${quote.service}`);
     if (quote.jobType) doc.text(`Job Type: ${quote.jobType}`);
     doc.moveDown(1);
 
-    // Table header
+    // Table header — no price columns
     const tableTop = doc.y;
-    const col = { item: 50, desc: 150, qty: 340, price: 400, total: 480 };
+    const col = { item: 50, desc: 180, qty: 460 };
 
     doc.fontSize(9).font('Helvetica-Bold').fillColor('#ffffff');
     doc.rect(50, tableTop - 4, 512, 20).fill('#0a1628');
     doc.fillColor('#ffffff');
-    doc.text('ITEM', col.item, tableTop, { width: 95 });
-    doc.text('DESCRIPTION', col.desc, tableTop, { width: 185 });
-    doc.text('QTY', col.qty, tableTop, { width: 55, align: 'center' });
-    doc.text('UNIT PRICE', col.price, tableTop, { width: 75, align: 'right' });
-    doc.text('TOTAL', col.total, tableTop, { width: 80, align: 'right' });
+    doc.text('ITEM', col.item, tableTop, { width: 125 });
+    doc.text('DESCRIPTION', col.desc, tableTop, { width: 270 });
+    doc.text('QTY', col.qty, tableTop, { width: 80, align: 'center' });
 
-    // Table rows
+    // Table rows — no prices
     let y = tableTop + 22;
     doc.font('Helvetica').fontSize(9).fillColor('#3a4a5c');
     (quote.rows || []).forEach((row, i) => {
-      const lineTotal = (Number(row.qty) || 0) * (Number(row.unitPrice) || 0);
       if (i % 2 === 0) doc.rect(50, y - 4, 512, 18).fill('#f8f9fb').fillColor('#3a4a5c');
-      doc.text(row.item || '', col.item, y, { width: 95 });
-      doc.text(row.description || '', col.desc, y, { width: 185 });
-      doc.text(String(row.qty || 0), col.qty, y, { width: 55, align: 'center' });
-      doc.text(money(row.unitPrice), col.price, y, { width: 75, align: 'right' });
-      doc.text(money(lineTotal), col.total, y, { width: 80, align: 'right' });
+      doc.text(row.item || '', col.item, y, { width: 125 });
+      doc.text(row.description || '', col.desc, y, { width: 270 });
+      doc.text(String(row.qty || 0), col.qty, y, { width: 80, align: 'center' });
       y += 20;
     });
 
-    // Totals
-    y += 10;
+    // Total only
+    y += 16;
     doc.moveTo(380, y).lineTo(562, y).strokeColor('#eef1f5').lineWidth(1).stroke();
-    y += 8;
-    doc.fontSize(10).font('Helvetica').fillColor('#3a4a5c');
-    doc.text('Subtotal:', 380, y).text(money(quote.subtotal), 480, y, { width: 80, align: 'right' });
-    y += 18;
-    if (quote.discount) {
-      doc.text('Discount:', 380, y).text(`-${money(quote.discount)}`, 480, y, { width: 80, align: 'right' });
-      y += 18;
-    }
-    if (quote.permitFee) {
-      doc.text('Permit/Inspection:', 380, y).text(money(quote.permitFee), 480, y, { width: 80, align: 'right' });
-      y += 18;
-    }
-    doc.text('Tax:', 380, y).text(money(quote.taxDue), 480, y, { width: 80, align: 'right' });
-    y += 22;
+    y += 10;
     doc.font('Helvetica-Bold').fontSize(13).fillColor('#0a1628');
     doc.text('TOTAL:', 380, y).text(money(quote.total), 480, y, { width: 80, align: 'right' });
 
@@ -120,55 +101,36 @@ function generateInvoicePDF(invoice, outputPath) {
     if (invoice.phone) doc.text(`Phone: ${invoice.phone}`);
     if (invoice.jobAddress) doc.text(`Job Address: ${invoice.jobAddress}`);
     if (invoice.county) doc.text(`County / Area: ${invoice.county}`);
-    if (invoice.area) doc.text(`Pricing Zone: ${invoice.area}`);
     if (invoice.service) doc.text(`Service: ${invoice.service}`);
     if (invoice.jobType) doc.text(`Job Type: ${invoice.jobType}`);
     doc.moveDown(1);
 
-    // Table header
+    // Table header — no price columns
     const tableTop = doc.y;
-    const col = { item: 50, desc: 150, qty: 340, price: 400, total: 480 };
+    const col = { item: 50, desc: 180, qty: 460 };
 
     doc.fontSize(9).font('Helvetica-Bold').fillColor('#ffffff');
     doc.rect(50, tableTop - 4, 512, 20).fill('#0a1628');
     doc.fillColor('#ffffff');
-    doc.text('ITEM', col.item, tableTop, { width: 95 });
-    doc.text('DESCRIPTION', col.desc, tableTop, { width: 185 });
-    doc.text('QTY', col.qty, tableTop, { width: 55, align: 'center' });
-    doc.text('UNIT PRICE', col.price, tableTop, { width: 75, align: 'right' });
-    doc.text('TOTAL', col.total, tableTop, { width: 80, align: 'right' });
+    doc.text('ITEM', col.item, tableTop, { width: 125 });
+    doc.text('DESCRIPTION', col.desc, tableTop, { width: 270 });
+    doc.text('QTY', col.qty, tableTop, { width: 80, align: 'center' });
 
-    // Table rows
+    // Table rows — no prices
     let y = tableTop + 22;
     doc.font('Helvetica').fontSize(9).fillColor('#3a4a5c');
     (invoice.rows || []).forEach((row, i) => {
-      const lineTotal = (Number(row.qty) || 0) * (Number(row.unitPrice) || 0);
       if (i % 2 === 0) doc.rect(50, y - 4, 512, 18).fill('#f8f9fb').fillColor('#3a4a5c');
-      doc.text(row.item || '', col.item, y, { width: 95 });
-      doc.text(row.description || '', col.desc, y, { width: 185 });
-      doc.text(String(row.qty || 0), col.qty, y, { width: 55, align: 'center' });
-      doc.text(money(row.unitPrice), col.price, y, { width: 75, align: 'right' });
-      doc.text(money(lineTotal), col.total, y, { width: 80, align: 'right' });
+      doc.text(row.item || '', col.item, y, { width: 125 });
+      doc.text(row.description || '', col.desc, y, { width: 270 });
+      doc.text(String(row.qty || 0), col.qty, y, { width: 80, align: 'center' });
       y += 20;
     });
 
-    // Totals
-    y += 10;
+    // Total only
+    y += 16;
     doc.moveTo(380, y).lineTo(562, y).strokeColor('#eef1f5').lineWidth(1).stroke();
-    y += 8;
-    doc.fontSize(10).font('Helvetica').fillColor('#3a4a5c');
-    doc.text('Subtotal:', 380, y).text(money(invoice.subtotal), 480, y, { width: 80, align: 'right' });
-    y += 18;
-    if (invoice.discount) {
-      doc.text('Discount:', 380, y).text(`-${money(invoice.discount)}`, 480, y, { width: 80, align: 'right' });
-      y += 18;
-    }
-    if (invoice.permitFee) {
-      doc.text('Permit/Inspection:', 380, y).text(money(invoice.permitFee), 480, y, { width: 80, align: 'right' });
-      y += 18;
-    }
-    doc.text('Tax:', 380, y).text(money(invoice.taxDue), 480, y, { width: 80, align: 'right' });
-    y += 22;
+    y += 10;
     doc.font('Helvetica-Bold').fontSize(13).fillColor('#0a1628');
     doc.text('TOTAL DUE:', 380, y).text(money(invoice.total), 480, y, { width: 80, align: 'right' });
 
