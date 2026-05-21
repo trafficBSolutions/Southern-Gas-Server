@@ -9,7 +9,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Ensure upload directories exist
-['uploads', 'uploads/quotes'].forEach(dir => {
+['uploads', 'uploads/quotes', 'uploads/invoices'].forEach(dir => {
   const fullPath = path.join(__dirname, dir);
   if (!fs.existsSync(fullPath)) fs.mkdirSync(fullPath, { recursive: true });
 });
@@ -19,12 +19,13 @@ const quoteRoutes = require('./routes/quoteRoute');
 const careerRoutes = require('./routes/careerRoute');
 const authRoutes = require('./routes/authRoute');
 const adminQuoteRoutes = require('./routes/adminQuoteRoute');
+const invoiceRoutes = require('./routes/invoiceRoute');
 const jobRoutes = require('./routes/jobRoute');
 
 const app = express();
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://127.0.0.1:5173', 'https://www.southerngassolutions.com'],
+  origin: ['http://127.0.0.1:5173', 'https://www.southerngassolutions.com'],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -55,6 +56,7 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/quote', quoteRoutes);
 app.use('/api/careers', careerRoutes);
 app.use('/api/admin-quotes', adminQuoteRoutes);
+app.use('/api/invoices', invoiceRoutes);
 app.use('/api/jobs', jobRoutes);
 
 const PORT = process.env.PORT || 5000;
