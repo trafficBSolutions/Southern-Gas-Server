@@ -220,4 +220,75 @@ function buildQuoteEmail({ name, quote, approveUrl }) {
 </html>`;
 }
 
-module.exports = { buildEmail, buildConfirmationEmail, buildQuoteEmail };
+function buildInvoiceEmail({ name, invoice, viewUrl }) {
+  const money = (n) => `$${(Number(n) || 0).toFixed(2)}`;
+  const dueStr = invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Upon Receipt';
+  const lineRows = (invoice.rows || []).map(r => {
+    const lineTotal = (Number(r.qty) || 0) * (Number(r.unitPrice) || 0);
+    return `<tr>
+      <td style="padding:8px 12px;border-bottom:1px solid #eef1f5;font-size:13px;color:#3a4a5c;">${r.item || ''}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #eef1f5;font-size:13px;color:#3a4a5c;">${r.description || ''}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #eef1f5;font-size:13px;color:#3a4a5c;text-align:center;">${r.qty}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #eef1f5;font-size:13px;color:#3a4a5c;text-align:right;">${money(r.unitPrice)}</td>
+      <td style="padding:8px 12px;border-bottom:1px solid #eef1f5;font-size:13px;color:#0a1628;font-weight:600;text-align:right;">${money(lineTotal)}</td>
+    </tr>`;
+  }).join('');
+
+  return `
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#f4f6f8;font-family:'Open Sans',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f8;padding:32px 0;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+
+        <tr><td style="background:#e8ecf1;padding:28px 32px;text-align:center;"><img src="${LOGO_URL}" alt="Southern Gas Solutions" width="260" style="display:block;margin:0 auto;" /></td></tr>
+        <tr><td style="height:4px;background:linear-gradient(90deg,#e86a10,#f0a830);"></td></tr>
+
+        <tr><td style="padding:28px 32px 12px;">
+          <h1 style="margin:0;font-family:'Montserrat',Arial,sans-serif;font-size:22px;font-weight:800;color:#0a1628;">Invoice ${invoice.invoiceNumber}</h1>
+          <p style="margin:10px 0 0;font-size:14px;color:#6b7a8d;">Hi ${name}, please find your invoice details below. A PDF copy is attached.</p>
+          <p style="margin:8px 0 0;font-size:13px;color:#3a4a5c;"><strong>Due Date:</strong> ${dueStr}</p>
+        </td></tr>
+
+        <tr><td style="padding:8px 32px 4px;"><p style="margin:0;font-family:'Montserrat',Arial,sans-serif;font-size:12px;font-weight:700;color:#6b7a8d;text-transform:uppercase;letter-spacing:0.5px;">Line Items</p></td></tr>
+        <tr><td style="padding:8px 32px 16px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #eef1f5;border-radius:6px;overflow:hidden;">
+            <tr style="background:#0a1628;">
+              <td style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;">ITEM</td>
+              <td style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;">DESCRIPTION</td>
+              <td style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;text-align:center;">QTY</td>
+              <td style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;text-align:right;">PRICE</td>
+              <td style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;text-align:right;">TOTAL</td>
+            </tr>
+            ${lineRows}
+          </table>
+        </td></tr>
+
+        <tr><td style="padding:0 32px 20px;">
+          <table width="260" cellpadding="0" cellspacing="0" align="right" style="border:1px solid #eef1f5;border-radius:6px;overflow:hidden;">
+            <tr><td style="padding:8px 14px;font-size:13px;color:#6b7a8d;">Subtotal</td><td style="padding:8px 14px;font-size:13px;color:#3a4a5c;text-align:right;">${money(invoice.subtotal)}</td></tr>
+            ${invoice.discount ? `<tr><td style="padding:8px 14px;font-size:13px;color:#6b7a8d;">Discount</td><td style="padding:8px 14px;font-size:13px;color:#16a34a;text-align:right;">-${money(invoice.discount)}</td></tr>` : ''}
+            ${invoice.permitFee ? `<tr><td style="padding:8px 14px;font-size:13px;color:#6b7a8d;">Permit/Inspection</td><td style="padding:8px 14px;font-size:13px;color:#3a4a5c;text-align:right;">${money(invoice.permitFee)}</td></tr>` : ''}
+            <tr><td style="padding:8px 14px;font-size:13px;color:#6b7a8d;">Tax</td><td style="padding:8px 14px;font-size:13px;color:#3a4a5c;text-align:right;">${money(invoice.taxDue)}</td></tr>
+            <tr style="background:#0a1628;"><td style="padding:10px 14px;font-size:14px;font-weight:700;color:#fff;">TOTAL DUE</td><td style="padding:10px 14px;font-size:14px;font-weight:700;color:#e86a10;text-align:right;">${money(invoice.total)}</td></tr>
+          </table>
+        </td></tr>
+
+        <tr><td style="padding:16px 32px 28px;text-align:center;">
+          <a href="${viewUrl}" style="display:inline-block;padding:16px 40px;background:linear-gradient(135deg,#e86a10,#d4451a);color:#ffffff;font-family:'Montserrat',Arial,sans-serif;font-weight:700;font-size:15px;border-radius:6px;text-decoration:none;">View Invoice</a>
+        </td></tr>
+
+        <tr><td style="padding:0 32px 28px;"><table width="100%" cellpadding="0" cellspacing="0" style="background:#fef7f0;border-radius:6px;border:1px solid #fde8d0;"><tr><td style="padding:16px 20px;"><p style="margin:0;font-size:14px;color:#3a4a5c;line-height:1.6;"><strong style="color:#e86a10;">Questions about this invoice?</strong><br/>Call us at <a href="tel:4048623911" style="color:#e86a10;font-weight:600;">(404) 862-3911</a> or email <a href="mailto:devon@southerngassolutions.com" style="color:#e86a10;">devon@southerngassolutions.com</a></p></td></tr></table></td></tr>
+
+        <tr><td style="background:#0a1628;padding:24px 32px;text-align:center;"><img src="${ICON_URL}" alt="SGS" width="36" style="display:block;margin:0 auto 10px;" /><p style="margin:0;font-family:'Montserrat',Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.6);">Southern Gas Solutions &bull; Serving North Georgia &amp; Metro Atlanta</p></td></tr>
+
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+}
+
+module.exports = { buildEmail, buildConfirmationEmail, buildQuoteEmail, buildInvoiceEmail };
