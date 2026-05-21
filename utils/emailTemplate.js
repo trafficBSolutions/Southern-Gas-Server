@@ -155,13 +155,10 @@ function buildConfirmationEmail({ name, type, details }) {
 function buildQuoteEmail({ name, quote, approveUrl }) {
   const money = (n) => `$${(Number(n) || 0).toFixed(2)}`;
   const lineRows = (quote.rows || []).map(r => {
-    const lineTotal = (Number(r.qty) || 0) * (Number(r.unitPrice) || 0);
     return `<tr>
       <td style="padding:8px 12px;border-bottom:1px solid #eef1f5;font-size:13px;color:#3a4a5c;">${r.item || ''}</td>
       <td style="padding:8px 12px;border-bottom:1px solid #eef1f5;font-size:13px;color:#3a4a5c;">${r.description || ''}</td>
       <td style="padding:8px 12px;border-bottom:1px solid #eef1f5;font-size:13px;color:#3a4a5c;text-align:center;">${r.qty}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #eef1f5;font-size:13px;color:#3a4a5c;text-align:right;">${money(r.unitPrice)}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #eef1f5;font-size:13px;color:#0a1628;font-weight:600;text-align:right;">${money(lineTotal)}</td>
     </tr>`;
   }).join('');
 
@@ -182,24 +179,20 @@ function buildQuoteEmail({ name, quote, approveUrl }) {
           <p style="margin:10px 0 0;font-size:14px;color:#6b7a8d;">Please review the details below. A PDF copy is also attached.</p>
         </td></tr>
 
-        <tr><td style="padding:8px 32px 4px;"><p style="margin:0;font-family:'Montserrat',Arial,sans-serif;font-size:12px;font-weight:700;color:#6b7a8d;text-transform:uppercase;letter-spacing:0.5px;">Line Items</p></td></tr>
+        <tr><td style="padding:8px 32px 4px;"><p style="margin:0;font-family:'Montserrat',Arial,sans-serif;font-size:12px;font-weight:700;color:#6b7a8d;text-transform:uppercase;letter-spacing:0.5px;">Scope of Work</p></td></tr>
         <tr><td style="padding:8px 32px 16px;">
           <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #eef1f5;border-radius:6px;overflow:hidden;">
             <tr style="background:#0a1628;">
               <td style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;">ITEM</td>
               <td style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;">DESCRIPTION</td>
               <td style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;text-align:center;">QTY</td>
-              <td style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;text-align:right;">PRICE</td>
-              <td style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;text-align:right;">TOTAL</td>
             </tr>
             ${lineRows}
           </table>
         </td></tr>
 
         <tr><td style="padding:0 32px 20px;">
-          <table width="260" cellpadding="0" cellspacing="0" align="right" style="border:1px solid #eef1f5;border-radius:6px;overflow:hidden;">
-            <tr><td style="padding:8px 14px;font-size:13px;color:#6b7a8d;">Subtotal</td><td style="padding:8px 14px;font-size:13px;color:#3a4a5c;text-align:right;">${money(quote.subtotal)}</td></tr>
-            <tr><td style="padding:8px 14px;font-size:13px;color:#6b7a8d;">Tax</td><td style="padding:8px 14px;font-size:13px;color:#3a4a5c;text-align:right;">${money(quote.taxDue)}</td></tr>
+          <table width="200" cellpadding="0" cellspacing="0" align="right" style="border:1px solid #eef1f5;border-radius:6px;overflow:hidden;">
             <tr style="background:#0a1628;"><td style="padding:10px 14px;font-size:14px;font-weight:700;color:#fff;">TOTAL</td><td style="padding:10px 14px;font-size:14px;font-weight:700;color:#e86a10;text-align:right;">${money(quote.total)}</td></tr>
           </table>
         </td></tr>
@@ -224,13 +217,10 @@ function buildInvoiceEmail({ name, invoice, viewUrl }) {
   const money = (n) => `$${(Number(n) || 0).toFixed(2)}`;
   const dueStr = invoice.dueDate ? new Date(invoice.dueDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Upon Receipt';
   const lineRows = (invoice.rows || []).map(r => {
-    const lineTotal = (Number(r.qty) || 0) * (Number(r.unitPrice) || 0);
     return `<tr>
       <td style="padding:8px 12px;border-bottom:1px solid #eef1f5;font-size:13px;color:#3a4a5c;">${r.item || ''}</td>
       <td style="padding:8px 12px;border-bottom:1px solid #eef1f5;font-size:13px;color:#3a4a5c;">${r.description || ''}</td>
       <td style="padding:8px 12px;border-bottom:1px solid #eef1f5;font-size:13px;color:#3a4a5c;text-align:center;">${r.qty}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #eef1f5;font-size:13px;color:#3a4a5c;text-align:right;">${money(r.unitPrice)}</td>
-      <td style="padding:8px 12px;border-bottom:1px solid #eef1f5;font-size:13px;color:#0a1628;font-weight:600;text-align:right;">${money(lineTotal)}</td>
     </tr>`;
   }).join('');
 
@@ -252,26 +242,20 @@ function buildInvoiceEmail({ name, invoice, viewUrl }) {
           <p style="margin:8px 0 0;font-size:13px;color:#3a4a5c;"><strong>Due Date:</strong> ${dueStr}</p>
         </td></tr>
 
-        <tr><td style="padding:8px 32px 4px;"><p style="margin:0;font-family:'Montserrat',Arial,sans-serif;font-size:12px;font-weight:700;color:#6b7a8d;text-transform:uppercase;letter-spacing:0.5px;">Line Items</p></td></tr>
+        <tr><td style="padding:8px 32px 4px;"><p style="margin:0;font-family:'Montserrat',Arial,sans-serif;font-size:12px;font-weight:700;color:#6b7a8d;text-transform:uppercase;letter-spacing:0.5px;">Scope of Work</p></td></tr>
         <tr><td style="padding:8px 32px 16px;">
           <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #eef1f5;border-radius:6px;overflow:hidden;">
             <tr style="background:#0a1628;">
               <td style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;">ITEM</td>
               <td style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;">DESCRIPTION</td>
               <td style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;text-align:center;">QTY</td>
-              <td style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;text-align:right;">PRICE</td>
-              <td style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;text-align:right;">TOTAL</td>
             </tr>
             ${lineRows}
           </table>
         </td></tr>
 
         <tr><td style="padding:0 32px 20px;">
-          <table width="260" cellpadding="0" cellspacing="0" align="right" style="border:1px solid #eef1f5;border-radius:6px;overflow:hidden;">
-            <tr><td style="padding:8px 14px;font-size:13px;color:#6b7a8d;">Subtotal</td><td style="padding:8px 14px;font-size:13px;color:#3a4a5c;text-align:right;">${money(invoice.subtotal)}</td></tr>
-            ${invoice.discount ? `<tr><td style="padding:8px 14px;font-size:13px;color:#6b7a8d;">Discount</td><td style="padding:8px 14px;font-size:13px;color:#16a34a;text-align:right;">-${money(invoice.discount)}</td></tr>` : ''}
-            ${invoice.permitFee ? `<tr><td style="padding:8px 14px;font-size:13px;color:#6b7a8d;">Permit/Inspection</td><td style="padding:8px 14px;font-size:13px;color:#3a4a5c;text-align:right;">${money(invoice.permitFee)}</td></tr>` : ''}
-            <tr><td style="padding:8px 14px;font-size:13px;color:#6b7a8d;">Tax</td><td style="padding:8px 14px;font-size:13px;color:#3a4a5c;text-align:right;">${money(invoice.taxDue)}</td></tr>
+          <table width="200" cellpadding="0" cellspacing="0" align="right" style="border:1px solid #eef1f5;border-radius:6px;overflow:hidden;">
             <tr style="background:#0a1628;"><td style="padding:10px 14px;font-size:14px;font-weight:700;color:#fff;">TOTAL DUE</td><td style="padding:10px 14px;font-size:14px;font-weight:700;color:#e86a10;text-align:right;">${money(invoice.total)}</td></tr>
           </table>
         </td></tr>
