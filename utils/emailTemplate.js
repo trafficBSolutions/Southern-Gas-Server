@@ -276,10 +276,6 @@ function buildInvoiceEmail({ name, invoice, viewUrl }) {
           </table>
         </td></tr>
 
-        <tr><td style="padding:16px 32px 28px;text-align:center;">
-          <a href="${viewUrl}" style="display:inline-block;padding:16px 40px;background:linear-gradient(135deg,#e86a10,#d4451a);color:#ffffff;font-family:'Montserrat',Arial,sans-serif;font-weight:700;font-size:15px;border-radius:6px;text-decoration:none;">View Invoice</a>
-        </td></tr>
-
         <tr><td style="padding:0 32px 28px;"><table width="100%" cellpadding="0" cellspacing="0" style="background:#fef7f0;border-radius:6px;border:1px solid #fde8d0;"><tr><td style="padding:16px 20px;"><p style="margin:0;font-size:14px;color:#3a4a5c;line-height:1.6;"><strong style="color:#e86a10;">Questions about this invoice?</strong><br/>Call us at <a href="tel:4048623911" style="color:#e86a10;font-weight:600;">(404) 862-3911</a> or email <a href="mailto:devon@southerngassolutions.com" style="color:#e86a10;">devon@southerngassolutions.com</a></p></td></tr></table></td></tr>
 
         <tr><td style="background:#0a1628;padding:24px 32px;text-align:center;"><img src="${ICON_URL}" alt="SGS" width="36" style="display:block;margin:0 auto 10px;" /><p style="margin:0;font-family:'Montserrat',Arial,sans-serif;font-size:12px;color:rgba(255,255,255,0.6);">Southern Gas Solutions &bull; Serving North Georgia &amp; Metro Atlanta</p></td></tr>
